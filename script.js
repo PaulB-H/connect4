@@ -9,17 +9,39 @@ const board = [
   [null, null, null, null, null, null, null],
 ];
 
+const resetGame = () => {
+  board.forEach((row, rowIdx) => {
+    row.forEach((col, colIdx) => {
+      board[rowIdx][colIdx] = null;
+      document
+        .querySelector(`.row${rowIdx}col${colIdx}`)
+        .classList.remove("red", "blue");
+    });
+  });
+};
+
+const game = {
+  currentTurn: "red",
+  winner: false,
+};
+
 const drop = (color, col) => {
   let freeSpace = false;
   for (let i = 5; i >= 0; i--) {
     if (!board[i][col]) {
       board[i][col] = color;
       freeSpace = true;
-      return board;
+      return {
+        err: false,
+        loc: `row${i}col${col}`,
+        row: i,
+        col: col,
+        color: color,
+      };
     }
   }
   if (!freeSpace) {
-    return "No free space";
+    return { err: true, msg: "Column Full!" };
   }
 };
 
@@ -185,3 +207,30 @@ const check4 = (color, row, col) => {
     return { err: false, winner: false };
   }
 };
+
+const takeTurn = (color, col) => {
+  const result = drop(color, col);
+
+  if (result.err) return result.msg;
+
+  document.querySelector(`.${result.loc}`).classList.add(`${color}`);
+
+  const winner = check4(game.currentTurn, result.row, result.col);
+  if (winner.winner) {
+    // Chicken Dinner...
+    game.winner = game.currentTurn;
+  }
+
+  if (game.currentTurn === "red") {
+    game.currentTurn = "blue";
+  } else if (game.currentTurn === "blue") {
+    game.currentTurn = "red";
+  }
+};
+
+document.querySelectorAll("[class^='col']").forEach((element, idx) => {
+  element.addEventListener("mouseup", () => {
+    takeTurn(game.currentTurn, idx);
+    if (game.winner) console.log(`Game over... ${game.winner} wins!`);
+  });
+});

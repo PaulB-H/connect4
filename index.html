@@ -11,6 +11,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      user-select: none;
     }
 
     body {
@@ -39,8 +40,26 @@
       aspect-ratio: 1;
     }
 
+    @media only screen and (max-width: 369px) {
+      .parent div {
+        height: 35px;
+      }
+    }
+
+    .red {
+      background-color: red !important;
+    }
+
+    .blue {
+      background-color: blue !important;
+    }
+
     /* <p>The syntax is grid-row-start / grid-column-start / grid-row-end / grid-column-end.</p> */
     /* https://www.w3schools.com/cssref/pr_grid-area.asp */
+
+    [class^="col"] {
+      z-index: 5;
+    }
 
     .col0 {
       grid-area: 1 / 1 / 7 / 1;
