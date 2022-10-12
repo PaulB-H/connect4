@@ -11,6 +11,7 @@ const board = [
 
 const resetGame = () => {
   document.getElementById("current-turn").innerText = "Red";
+  document.querySelector("overlay").classList.add("d-none");
   game.currentTurn = "red";
   game.winner = false;
   board.forEach((row, rowIdx) => {
@@ -239,6 +240,11 @@ const takeTurn = (color, col) => {
 document.querySelectorAll("[class^='col']").forEach((element, idx) => {
   element.addEventListener("mouseup", () => {
     takeTurn(game.currentTurn, idx);
-    if (game.winner) console.log(`Game over... ${game.winner} wins!`);
+    if (game.winner) {
+      // console.log(`Game over... ${game.winner} wins!`);
+      document.getElementById("winner-overlay").innerText =
+        game.winner.toUpperCase();
+      document.querySelector("overlay").classList.remove("d-none");
+    }
   });
 });

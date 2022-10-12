@@ -55,6 +55,34 @@
       background-color: blue !important;
     }
 
+    overlay {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      position: absolute;
+      text-align: center;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      z-index: 10;
+      background: rgba(100, 100, 100, 0.8);
+      color: white;
+      font-weight: bolder;
+    }
+
+
+    overlay button {
+      max-width: 200px;
+      padding: 10px;
+      margin: 0 auto;
+      font-size: 20px;
+    }
+
+    .d-none {
+      display: none !important;
+    }
+
     /* <p>The syntax is grid-row-start / grid-column-start / grid-row-end / grid-column-end.</p> */
     /* https://www.w3schools.com/cssref/pr_grid-area.asp */
 
@@ -276,9 +304,15 @@
 </head>
 
 <body>
+
   <h2 style="padding: 5px;">Connect 4</h2>
   <h2 style="padding: 5px;">Current Turn: <span id="current-turn">Red</span></h2>
-  <div class="parent">
+  <div class="parent" style="position: relative;">
+    <overlay class="d-none" style="display: flex; justify-content: center; flex-direction: column">
+      <h3>Game Over...</h3>
+      <h2 style="margin: 10px;">Winner: <span id="winner-overlay"></span></h2>
+      <button onmouseup="resetGame()">Play again?</button>
+    </overlay>
     <container class="col0"> </container>
     <!-- <div class="rowContainer0"> -->
     <div class="row0col0"> </div>
