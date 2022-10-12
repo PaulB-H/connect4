@@ -21,9 +21,17 @@
       align-items: center;
       flex-direction: column;
       height: 100vh;
+      background-image: url("./cork.webp");
     }
 
-    .parent {
+    body h1 {
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0px 0px 33px 0px #FFFFFF;
+      padding: 5px;
+    }
+
+    .board {
+      position: relative;
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       grid-template-rows: repeat(6, 1fr);
@@ -31,18 +39,19 @@
       width: 100%;
       max-width: 700px;
       padding: 10px;
+      border-radius: 10px;
     }
 
-    .parent div {
+    .board div {
       height: 50px;
       background-color: rgb(156, 156, 156);
       border-radius: 50%;
       margin: 5px auto;
-      aspect-ratio: 1;
+      aspect-ratio: 1/1;
     }
 
     @media only screen and (max-width: 369px) {
-      .parent div {
+      .board div {
         height: 35px;
       }
     }
@@ -71,7 +80,6 @@
       font-weight: bolder;
     }
 
-
     overlay button {
       max-width: 200px;
       padding: 10px;
@@ -82,9 +90,6 @@
     .d-none {
       display: none !important;
     }
-
-    /* <p>The syntax is grid-row-start / grid-column-start / grid-row-end / grid-column-end.</p> */
-    /* https://www.w3schools.com/cssref/pr_grid-area.asp */
 
     [class^="col"] {
       z-index: 5;
@@ -286,7 +291,6 @@
       grid-area: 6 / 7 / 7 / 8;
     }
 
-
     /* Keeping this incase I switch to using flex... */
     /* [class*="rowContainer"] {
       display: flex;
@@ -304,11 +308,10 @@
 </head>
 
 <body>
-
-  <h2 style="padding: 5px;">Connect 4</h2>
-  <h2 style="padding: 5px;">Current Turn: <span id="current-turn">Red</span></h2>
-  <div class="parent" style="position: relative;">
-    <overlay class="d-none" style="display: flex; justify-content: center; flex-direction: column">
+  <h1>Connect 4</h1>
+  <h1>Current Turn: <span id="current-turn">Red</span></h1>
+  <div class="board">
+    <overlay class="d-none">
       <h3>Game Over...</h3>
       <h2 style="margin: 10px;">Winner: <span id="winner-overlay"></span></h2>
       <button onmouseup="resetGame()">Play again?</button>
