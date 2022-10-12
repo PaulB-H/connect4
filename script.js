@@ -10,6 +10,9 @@ const board = [
 ];
 
 const resetGame = () => {
+  document.getElementById("current-turn").innerText = "Red";
+  game.currentTurn = "red";
+  game.winner = false;
   board.forEach((row, rowIdx) => {
     row.forEach((col, colIdx) => {
       board[rowIdx][colIdx] = null;
@@ -226,6 +229,11 @@ const takeTurn = (color, col) => {
   } else if (game.currentTurn === "blue") {
     game.currentTurn = "red";
   }
+
+  let string =
+    game.currentTurn.charAt(0).toUpperCase() +
+    game.currentTurn.slice(1, game.currentTurn.length);
+  document.getElementById("current-turn").innerText = string;
 };
 
 document.querySelectorAll("[class^='col']").forEach((element, idx) => {
