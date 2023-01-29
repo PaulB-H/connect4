@@ -1,6 +1,6 @@
 // console.log("Hello 4");
 
-const board = [
+const board: (null | "red" | "blue")[][] = [
   [null, null, null, null, null, null, null],
   [null, null, null, null, null, null, null],
   [null, null, null, null, null, null, null],
@@ -9,58 +9,54 @@ const board = [
   [null, null, null, null, null, null, null],
 ];
 
-const resetGame = () => {
-  document.getElementById("current-turn").innerText = "Red";
-  document.querySelector("overlay").classList.add("d-none");
-  game.currentTurn = "red";
-  game.winner = false;
-  board.forEach((row, rowIdx) => {
-    row.forEach((col, colIdx) => {
-      board[rowIdx][colIdx] = null;
-      document
-        .querySelector(`.row${rowIdx}col${colIdx}`)
-        .classList.remove("red", "blue");
-    });
-  });
-};
-
 const game = {
-  currentTurn: "red",
-  winner: false,
+  currentTurn: <"red" | "blue">"red",
+  winner: <null | "red" | "blue">null,
 };
 
-const drop = (color, col) => {
-  let freeSpace = false;
+const takeTurn = (color: "red" | "blue", col: number): void => {
+  const result = drop(color, col);
+
+  // if result is false drop was unsuccessful
+  if (!result) return;
+
+  const winner = check4(game.currentTurn, result.row, result.col);
+  if (winner) {
+    // Chicken Dinner...
+    game.winner = game.currentTurn;
+  } else {
+    if (game.currentTurn === "red") {
+      game.currentTurn = "blue";
+    } else if (game.currentTurn === "blue") {
+      game.currentTurn = "red";
+    }
+    const turnString =
+      game.currentTurn.charAt(0).toUpperCase() + game.currentTurn.slice(1);
+
+    document.getElementById("current-turn")!.innerText = turnString;
+  }
+};
+
+// Return loc of placement or false if could not place
+const drop = (
+  color: "red" | "blue",
+  col: number
+): false | { row: number; col: number } => {
   for (let i = 5; i >= 0; i--) {
     if (!board[i][col]) {
       board[i][col] = color;
-      freeSpace = true;
-      return {
-        err: false,
-        loc: `row${i}col${col}`,
-        row: i,
-        col: col,
-        color: color,
-      };
+      document
+        .querySelector(`.row${[i]}col${[col]}`)!
+        .classList.add(`${color}`);
+
+      return { row: i, col: col };
     }
   }
-  if (!freeSpace) {
-    return { err: true, msg: "Column Full!" };
-  }
+
+  return false;
 };
 
-const check4 = (color, row, col) => {
-  if (row < 0 || row > 5 || col < 0 || col > 6) {
-    return {
-      err: true,
-      msg: "Starting point off board...",
-    };
-  }
-  if (color !== "red" && color !== "blue")
-    return { err: true, msg: "Must pass 'red' or 'blue'..." };
-  if (board[row][col] !== color)
-    return { err: true, msg: "Starting color not same as parameter color..." };
-
+const check4 = (color: string, row: number, col: number): boolean => {
   let NStotal = 0;
   let moreNorth = true;
   let northTracker = 1;
@@ -206,45 +202,37 @@ const check4 = (color, row, col) => {
   });
 
   if (winner) {
-    return { err: false, winner: true, msg: `${color} wins!`, color: color };
+    return true;
   } else {
-    return { err: false, winner: false };
+    return false;
   }
 };
 
-const takeTurn = (color, col) => {
-  const result = drop(color, col);
-
-  if (result.err) return result.msg;
-
-  document.querySelector(`.${result.loc}`).classList.add(`${color}`);
-
-  const winner = check4(game.currentTurn, result.row, result.col);
-  if (winner.winner) {
-    // Chicken Dinner...
-    game.winner = game.currentTurn;
-  }
-
-  if (game.currentTurn === "red") {
-    game.currentTurn = "blue";
-  } else if (game.currentTurn === "blue") {
-    game.currentTurn = "red";
-  }
-
-  let string =
-    game.currentTurn.charAt(0).toUpperCase() +
-    game.currentTurn.slice(1, game.currentTurn.length);
-  document.getElementById("current-turn").innerText = string;
-};
-
-document.querySelectorAll("[class^='col']").forEach((element, idx) => {
-  element.addEventListener("mouseup", () => {
+document.querySelectorAll("[class^='col']").forEach((element, idx): void => {
+  element.addEventListener("mouseup", (): void => {
     takeTurn(game.currentTurn, idx);
     if (game.winner) {
-      // console.log(`Game over... ${game.winner} wins!`);
-      document.getElementById("winner-overlay").innerText =
-        game.winner.toUpperCase();
-      document.querySelector("overlay").classList.remove("d-none");
+      console.log(`Game over... ${game.winner} wins!`);
+      document.getElementById("winner-overlay")!.innerText =
+        game.currentTurn.toUpperCase();
+      document.querySelector("overlay")!.classList.remove("d-none");
     }
   });
 });
+
+const resetGame = (): void => {
+  document.getElementById("current-turn")!.innerText = "Red";
+  document.querySelector("overlay")!.classList.add("d-none");
+
+  game.currentTurn = "red";
+  game.winner = null;
+
+  board.forEach((row, rowIdx) => {
+    row.forEach((col, colIdx) => {
+      board[rowIdx][colIdx] = null;
+      document
+        .querySelector(`.row${rowIdx}col${colIdx}`)!
+        .classList.remove("red", "blue");
+    });
+  });
+};
